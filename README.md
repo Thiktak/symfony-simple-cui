@@ -9,8 +9,9 @@ This is a program which simplify the creation of Symfony2 project and its use (c
 * Install (init) new __symfony__ project (symfony/framework-standard-edition)
 * Symfony commands ... shorter !
 
+## How to use ?
 
-    sf
+    sf 
 
 or
 
