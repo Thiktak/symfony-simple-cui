@@ -1,0 +1,205 @@
+#!/bin/bash
+
+C0="\\033[0m"
+C1="\\033[41m"
+C2="\\033[33m"
+C3="\\033[32m"
+
+function printCmd()
+{
+    echo -n -e "  \033[32m$\033[35m $1${C0}";
+    echo "";
+}
+
+# printAndExec "cmd"
+function printAndExec()
+{
+    printCmd "$1";
+    $1
+}
+
+# ask "question"
+function ask()
+{
+    if [ -z != $2 ]; then
+      read -e -p "  $1 ($2) : " r;
+    else
+      read -e -p "  $1 : " r;
+    fi;
+    echo "${r:-$2}";
+}
+
+# askYN "question" "defaultValue"
+# if 0/1
+function askYN()
+{
+    while true; do
+        echo -n -e "  ${C2}$1 ? (yY/nN) :${C0} " >&2;
+        read yn
+
+        case $yn in
+            [Yy]* ) echo "y"; return 0;;
+            [Nn]* ) echo "n"; return 1;;
+            "" )
+              if [ $# -ge 2 ]; then
+                echo "$2"; return;
+              fi
+              ;;
+            * ) echo "Please answer yes or no."; echo "";;
+        esac
+    done
+}
+
+# askAndExec "question"
+# if 0/1
+function askAndExec()
+{
+    if [ $(askYN "$1" "n") == "y" ]; then
+      printAndExec "${2:-$1}";
+      return 0;
+    fi
+    return 1;
+}
+
+
+nb="$#"
+v="$1"
+shift 1
+m="$@"
+
+case $v in
+
+  # execute
+  "e")
+      printAndExec "php app/console ${m}";
+      ;;
+
+  # Assets
+  "ai")
+      printAndExec "php app/console assets:install ${m}";
+      ;;
+
+  # Assetic
+  "ad")
+      printAndExec "php app/console assetic:dump ${m}";
+      ;;
+
+  # Cache
+  "cc")
+      askAndExec "Cache --env=dev" "php app/console cache:clear --env=dev ${m}";
+      askAndExec "Cache --env=prod" "php app/console cache:clear --env=prod ${m}";
+      ;;
+
+  # Doctrine
+  "dgc")
+      printAndExec "php app/console doctrine:generate:crud ${m}";
+      ;;
+  "dgey")
+      printAndExec "php app/console doctrine:generate:entity ${m}";
+      ;;
+  "dges")
+      if r0=$(ask "Entity name" "$2"); then
+          printAndExec "php app/console doctrine:generate:entities ${r0:-$2}";
+      else
+          printAndExec "php app/console doctrine:generate:entities ${m}";
+      fi
+      ;;
+  "dgf")
+      printAndExec "php app/console doctrine:generate:form ${m}";
+      ;;
+  "dsu")
+      printAndExec "php app/console doctrine:schema:update --dump-sql ${m}";
+      echo "";
+      askAndExec "php app/console doctrine:schema:update --force ${m}";
+      ;;
+  "dsv")
+      printAndExec "php app/console doctrine:schema:validate ${m}";
+      ;;
+
+  # Generate
+  "gb")
+      printAndExec "php app/console generate:bundle ${m}";
+      ;;
+  "gc")
+      printAndExec "php app/console generate:controller ${m}";
+      ;;
+
+  # Composer.phar
+  "gc:d")
+      printCmd "curl -sS https://getcomposer.org/installer | php"
+      curl -sS https://getcomposer.org/installer | php
+      ;;
+  "gc")
+      printAndExec "php composer.phar ${m}";
+      ;;
+  "gc:u")
+      printAndExec "php composer.phar update ${m}";
+      ;;
+
+  # Router
+  "rd")
+      printAndExec "php app/console router:debug ${m}";
+      ;;
+
+  # Symfony
+  "sf:chm")
+      printAndExec "chmod 0777 app/logs/ app/cache/";
+      ;;
+
+  "sf:env")
+      printAndExec "php app/console cache:clear --env=dev";
+      printAndExec "php app/console cache:clear --env=prod";
+      printAndExec "chmod -R 0777 app/logs/ app/cache/";
+      printAndExec "php composer.phar update";
+      printAndExec "php app/console cache:clear --env=dev";
+      printAndExec "php app/console cache:clear --env=prod";
+      printAndExec "chmod -R 0777 app/logs/ app/cache/";
+      ;;
+
+  "")
+      echo "  This is a bash script to simplify the symfony commands."
+      echo "    by Olivares Georges [http://github.com/Thiktak]"
+      echo ""
+      echo -e "  Usage : ${C3}sf ${C2}[cmd]${C0} ${C3}[more]${C0}"
+      echo ""
+      echo "  Help :"
+
+      echo -e "     ${C2} e      ${C0}${C1}e${C0}xecute 'php app/console' command ";
+      echo "";
+      echo -e "     ${C2} ai     ${C0}${C1}a${C0}ssets:${C1}i${C0}nstall";
+      echo "";
+      echo -e "     ${C2} ad     ${C0}${C1}a${C0}ssetic:${C1}d${C0}ump";
+      echo "";
+      echo -e "     ${C2} cc     ${C0}${C1}c${C0}ache:${C1}c${C0}lear";
+      echo "";
+      echo -e "     ${C2} dgc    ${C0}${C1}d${C0}octrine:${C1}g${C0}enerate:${C1}c${C0}rud";
+      echo -e "     ${C2} dgey   ${C0}${C1}d${C0}octrine:${C1}g${C0}enerate:${C1}e${C0}ntit${C1}y${C0}";
+      echo -e "     ${C2} dges   ${C0}${C1}d${C0}octrine:${C1}g${C0}enerate:${C1}e${C0}ntitie${C1}s${C0}";
+      echo -e "     ${C2} dgf    ${C0}${C1}d${C0}octrine:${C1}g${C0}enerate:${C1}f${C0}orm";
+      echo -e "     ${C2} dsu    ${C0}${C1}d${C0}octrine:${C1}s${C0}chema:${C1}u${C0}pdate";
+      echo -e "     ${C2} dsv    ${C0}${C1}d${C0}octrine:${C1}s${C0}chema:${C1}v${C0}alidate";
+      echo "";
+      echo -e "     ${C2} gb     ${C0}${C1}g${C0}enerate:${C1}b${C0}undle";
+      echo -e "     ${C2} gc     ${C0}${C1}g${C0}enerate:${C1}c${C0}ontroller";
+      echo "";
+      echo -e "     ${C2} rd     ${C0}${C1}r${C0}outer:${C1}d${C0}ebug";
+      echo "";
+      echo -e "     ${C2} gc     ${C0}Execute composer.phar command";
+      echo -e "     ${C2} gc:d   ${C0}Download composer.phar";
+      echo -e "     ${C2} gc:u   ${C0}php composer.phar update";
+      echo "";
+      echo -e "     ${C2} sf:chm ${C0}Apply chmod to app/logs and app/cache"
+      echo -e "     ${C2} sf:env ${C0}Update environment"
+
+      if [ "$nb" == "0" ]; then
+          echo ""
+          if r0=$(ask "Enter command"); then
+              sf "$r0"
+          fi
+      fi;
+      ;;
+
+  *)
+      echo -e "  ${C1}Unknwown command${C0}";
+      ;;
+esac
