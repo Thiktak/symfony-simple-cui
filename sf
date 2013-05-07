@@ -160,40 +160,49 @@ case $v in
       printAndExec "chmod -R 0777 app/logs/ app/cache/";
       ;;
 
+  # self
+  "self-update")
+      printCmd "curl -L -sS http://goo.gl/6QaT7 > sf"
+      curl -L -sS http://goo.gl/6QaT7 > sf
+      ;;
+
   "")
       echo "  This is a bash script to simplify the symfony commands."
-      echo "    by Olivares Georges [http://github.com/Thiktak]"
+      echo ""
+      echo "  Version v0.0.1 2013-05-08 @author Olivares Georges [http://github.com/Thiktak]"
       echo ""
       echo -e "  Usage : ${C3}sf ${C2}[cmd]${C0} ${C3}[more]${C0}"
       echo ""
       echo "  Help :"
 
-      echo -e "     ${C2} e        ${C0}${C1}e${C0}xecute 'php app/console' command ";
+      echo -e "     ${C2} e             ${C0}${C1}e${C0}xecute 'php app/console' command ";
       echo "";
-      echo -e "     ${C2} ai       ${C0}${C1}a${C0}ssets:${C1}i${C0}nstall";
+      echo -e "     ${C2} ai            ${C0}${C1}a${C0}ssets:${C1}i${C0}nstall";
       echo "";
-      echo -e "     ${C2} ad       ${C0}${C1}a${C0}ssetic:${C1}d${C0}ump";
+      echo -e "     ${C2} ad            ${C0}${C1}a${C0}ssetic:${C1}d${C0}ump";
       echo "";
-      echo -e "     ${C2} cc       ${C0}${C1}c${C0}ache:${C1}c${C0}lear";
+      echo -e "     ${C2} cc            ${C0}${C1}c${C0}ache:${C1}c${C0}lear";
       echo "";
-      echo -e "     ${C2} dgc      ${C0}${C1}d${C0}octrine:${C1}g${C0}enerate:${C1}c${C0}rud";
-      echo -e "     ${C2} dgey     ${C0}${C1}d${C0}octrine:${C1}g${C0}enerate:${C1}e${C0}ntit${C1}y${C0}";
-      echo -e "     ${C2} dges     ${C0}${C1}d${C0}octrine:${C1}g${C0}enerate:${C1}e${C0}ntitie${C1}s${C0}";
-      echo -e "     ${C2} dgf      ${C0}${C1}d${C0}octrine:${C1}g${C0}enerate:${C1}f${C0}orm";
-      echo -e "     ${C2} dsu      ${C0}${C1}d${C0}octrine:${C1}s${C0}chema:${C1}u${C0}pdate";
-      echo -e "     ${C2} dsv      ${C0}${C1}d${C0}octrine:${C1}s${C0}chema:${C1}v${C0}alidate";
+      echo -e "     ${C2} dgc           ${C0}${C1}d${C0}octrine:${C1}g${C0}enerate:${C1}c${C0}rud";
+      echo -e "     ${C2} dgey          ${C0}${C1}d${C0}octrine:${C1}g${C0}enerate:${C1}e${C0}ntit${C1}y${C0}";
+      echo -e "     ${C2} dges          ${C0}${C1}d${C0}octrine:${C1}g${C0}enerate:${C1}e${C0}ntitie${C1}s${C0}";
+      echo -e "     ${C2} dgf           ${C0}${C1}d${C0}octrine:${C1}g${C0}enerate:${C1}f${C0}orm";
+      echo -e "     ${C2} dsu           ${C0}${C1}d${C0}octrine:${C1}s${C0}chema:${C1}u${C0}pdate";
+      echo -e "     ${C2} dsv           ${C0}${C1}d${C0}octrine:${C1}s${C0}chema:${C1}v${C0}alidate";
       echo "";
-      echo -e "     ${C2} gb       ${C0}${C1}g${C0}enerate:${C1}b${C0}undle";
-      echo -e "     ${C2} gc       ${C0}${C1}g${C0}enerate:${C1}c${C0}ontroller";
+      echo -e "     ${C2} gb            ${C0}${C1}g${C0}enerate:${C1}b${C0}undle";
+      echo -e "     ${C2} gc            ${C0}${C1}g${C0}enerate:${C1}c${C0}ontroller";
       echo "";
-      echo -e "     ${C2} rd       ${C0}${C1}r${C0}outer:${C1}d${C0}ebug";
+      echo -e "     ${C2} rd            ${C0}${C1}r${C0}outer:${C1}d${C0}ebug";
       echo "";
-      echo -e "     ${C2} cp       ${C0}Execute composer.phar command";
-      echo -e "     ${C2} cp:d     ${C0}Download composer.phar";
-      echo -e "     ${C2} cp:u     ${C0}php composer.phar update";
+      echo -e "     ${C2} cp            ${C0}Execute composer.phar command";
+      echo -e "     ${C2} cp:d          ${C0}Download composer.phar";
+      echo -e "     ${C2} cp:u          ${C0}php composer.phar update";
       echo "";
-      echo -e "     ${C2} sf:chm   ${C0}Apply chmod to app/logs and app/cache"
-      echo -e "     ${C2} sf:env   ${C0}Update environment"
+      echo -e "     ${C2} sf:chm        ${C0}Apply chmod to app/logs and app/cache"
+      echo -e "     ${C2} sf:env        ${C0}Update environment"
+      echo ""
+      echo -e "     ${C2} self-update   ${C0}Update script"
 
       if [ "$nb" == "0" ]; then
           echo ""
