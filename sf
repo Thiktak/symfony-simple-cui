@@ -34,6 +34,7 @@ function ask()
 function askYN()
 {
     while true; do
+        echo "" >&2;
         echo -n -e "  ${C2}$1 ? (yY/nN) :${C0} " >&2;
         read yn
 
@@ -59,6 +60,28 @@ function askAndExec()
       return 0;
     fi
     return 1;
+}
+
+
+function downloadComposerPhar()
+{
+    printCmd "curl -sS https://getcomposer.org/installer | php"
+    curl -sS https://getcomposer.org/installer | php
+}
+
+function checkIfComposer()
+{
+    if [ ! -f "composer.phar" ]; then
+        echo -e "  ${C1}                                    ${C0}";
+        echo -e "  ${C1}  Composer.phar is not installed !  ${C0}";
+        echo -e "  ${C1}                                    ${C0}";
+
+        if ! askAndExec "Do you want to download composer.phar" "downloadComposerPhar"; then
+            return 1;
+        fi;
+        return ;
+    fi;
+    return 0;
 }
 
 
@@ -130,14 +153,17 @@ case $v in
 
   # Composer.phar
   "cp:d")
-      printCmd "curl -sS https://getcomposer.org/installer | php"
-      curl -sS https://getcomposer.org/installer | php
+      downloadComposerPhar;
       ;;
   "cp")
-      printAndExec "php composer.phar ${m}";
+      if checkIfComposer; then
+          printAndExec "php composer.phar ${m}";
+      fi
       ;;
   "cp:u")
-      printAndExec "php composer.phar update ${m}";
+      if checkIfComposer; then
+          printAndExec "php composer.phar update ${m}";
+      fi
       ;;
 
   # Router
@@ -158,6 +184,19 @@ case $v in
       printAndExec "php app/console cache:clear --env=dev";
       printAndExec "php app/console cache:clear --env=prod";
       printAndExec "chmod -R 0777 app/logs/ app/cache/";
+      ;;
+
+  "sf:init")
+      if checkIfComposer; then
+        echo "  composer.phar installed";
+        if askAndExec "php composer.phar create-project symfony/framework-standard-edition symfony"; then
+          cd ./symfony
+          mv * .[^.] .??* ..
+          echo "OK !";
+        fi;
+      else
+        echo "  composer.phar not installed";
+      fi;
       ;;
 
   # self
@@ -201,6 +240,7 @@ case $v in
       echo "";
       echo -e "     ${C2} sf:chm        ${C0}Apply chmod to app/logs and app/cache"
       echo -e "     ${C2} sf:env        ${C0}Update environment"
+      echo -e "     ${C2} sf:init       ${C0}Initialize symfony"
       echo ""
       echo -e "     ${C2} self-update   ${C0}Update script"
 
