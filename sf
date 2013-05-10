@@ -249,7 +249,7 @@ case $v in
           if r0=$(ask "Enter command"); then
               if [[ ! -z "$r0" ]]; then
                   echo ""
-                  sf "$r0"
+                  bash sf "$r0"
               fi
           fi
       fi;
