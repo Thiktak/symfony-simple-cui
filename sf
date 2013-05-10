@@ -111,6 +111,7 @@ case $v in
   "cc")
       askAndExec "Cache --env=dev" "php app/console cache:clear --env=dev ${m}";
       askAndExec "Cache --env=prod" "php app/console cache:clear --env=prod ${m}";
+      askAndExec "chmod -R 0777 app/logs/ app/cache/";
       ;;
 
   # Doctrine
@@ -173,7 +174,7 @@ case $v in
 
   # Symfony
   "sf:chm")
-      printAndExec "chmod 0777 app/logs/ app/cache/";
+      printAndExec "chmod -R 0777 app/logs/ app/cache/";
       ;;
 
   "sf:env")
